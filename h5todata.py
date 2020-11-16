@@ -7,7 +7,7 @@ from os.path import join
 
 # path_ = '/media/xinhe/hub/DHP19/h5_dataset_7500_events/346x260/'
 
-path_ = 'data_small/'
+path_ = '../h5_dataset_7500_events/346x260/'
 P_mat_dir = 'P_matrices'
 image_h, image_w, num_joints = 260, 346, 13
 P_mat_cam = np.load(join(P_mat_dir, 'P2.npy'))
