@@ -5,9 +5,10 @@ import cv2
 import h5py
 from os.path import join
 
-# path_ = '/media/xinhe/hub/DHP19/h5_dataset_7500_events/346x260/'
+path_ = '../data_test/346x260/'
+# path_ = '../h5_dataset_7500_events/346x260/'
 
-path_ = 'data_small/'
+# path_ = 'data_small/'
 P_mat_dir = 'P_matrices'
 image_h, image_w, num_joints = 260, 346, 13
 P_mat_cam = np.load(join(P_mat_dir, 'P2.npy'))
@@ -44,8 +45,8 @@ for i in range(len(path_list)):
         pass
         # print(file)
     else:
-        print(file)
-        print(i / len(path_list) * 100 / 2)
+        # print(file)
+        # print(i / len(path_list) * 100 / 2)
         subj = file[file.index('S') + 1:file.index('_')]
         sess = file[file.index('session') + 7:file.index('_', 8)]
         mov = file[file.index('mov') + 3:file.index('_', 16)]
@@ -54,12 +55,13 @@ for i in range(len(path_list)):
         # print(images_all.shape)    # (k, 260, 346, 4)
         file = file[:file.index('.h5')] + "_label" + file[file.index('.h5'):]
         vicon_xyz_all = load_file_(path_+file)
-        print(vicon_xyz_all.shape)  # (k, 3, 13)
+        # print(vicon_xyz_all.shape)  # (k, 3, 13)
 
         mkdir(path_ + '../dhp_lstm/' + file_name)
         mkdir(path_+'../dhp_lstm/'+file_name+'/annot/')
         mkdir(path_+'../dhp_lstm/'+file_name+'/images/')
         res = dict()
+        num_img = 0
         for t in range(vicon_xyz_all.shape[0]):
             vicon_xyz = vicon_xyz_all[t]
             image = images_all[t, :, :, ch_idx]*50
@@ -71,15 +73,27 @@ for i in range(len(path_list)):
 
             u = coord_pix_all_cam2_homog_norm[0]-44
             v = image_h - coord_pix_all_cam2_homog_norm[1]  # flip v coordinate to match the image direction
+            if u[np.isnan(u)].any():
+                continue
+                # print(u[np.isnan(u)])
+                # print("error"+"!"*30)
 
+            num_img +=1
+            if v[v<=0].any():
+                v[v <= 0] = 1
+            if u[u<=0].any():
+                u[u <= 0] = 1
+            # if v[v <= 0].any():
+            #     print(v[v<=0])
+            #     print("error"+"!"*30)
 
-            u[np.isnan(u)] = 1
-            v[np.isnan(v)] = 1
-            u[u>=260] = 259
+            # u[np.isnan(u)] = 1
+            # v[np.isnan(v)] = 1
+            # u[u>=260] = 259
             u = u.astype(np.int32)
             v = v.astype(np.int32)
 
-            image_name = '_'+str(t)+".jpg"
+            image_name = '_'+str(num_img)+".jpg"
             joints_3d = np.zeros((13, 3), dtype=np.float)
             joints_3d_vis = np.ones(13, dtype=np.int)
             joints_3d[:, 0] = u
@@ -93,6 +107,3 @@ for i in range(len(path_list)):
         with open(path_+'../dhp_lstm/'+file_name+'/annot/' +file_name+ '.json', "w") as f:
             json.dump(res, f)
         print("finish")
-
-
-

@@ -15,4 +15,4 @@ def load_file_(filepath):
         raise ValueError('.h5 required format.')
     return data
 load_file_('/media/xinhe/hub/DHP19/h5_dataset_7500_events/346x260/S1_session2_mov1_7500events.h5')
-S1_session2_mov1_7500events.h5
+# S1_session2_mov1_7500events.h5
