@@ -79,10 +79,10 @@ for i in range(len(path_list)):
                 # print("error"+"!"*30)
 
             num_img +=1
-            if v[v<=0].any():
-                v[v <= 0] = 1
-            if u[u<=0].any():
-                u[u <= 0] = 1
+            if v[v<=2].any():
+                v[v <= 2] = 2
+            if u[u<=2].any():
+                u[u <= 2] = 2
             # if v[v <= 0].any():
             #     print(v[v<=0])
             #     print("error"+"!"*30)

@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 
-path_ = 'dhp_lstm/'
+path_ = '../data_test/dhp_lstm/'
 seqs = os.listdir(path_)
 temporal_dir = []
 seqs.sort(key=lambda x: (int(x[:2]), x[3:4], x[5:6]))
@@ -41,9 +41,15 @@ def plot_2d(dvs_frame, joint):
     " To plot image and 2D ground truth and prediction "
     # plt.figure()
     plt.cla()
-    plt.imshow(dvs_frame)
+    plt.imshow(np.zeros((260,260)))
+    # plt.imshow(dvs_frame)
+
+
 
     temp = np.array(joint)
+    if temp[temp <= 0].any():
+        print(temp)
+    # print(temp)
     plt.plot(temp[:, 0], temp[:, 1], '.', c='red', label='gt')
     plt.show()
     plt.pause(0.0002)
